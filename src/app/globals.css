@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* next-themes menulis data-theme di <html> (DESIGN.md §4.1) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Token semantik DESIGN.md §4.1. Gelap = default. */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #070e1b;
+  --surface: #0c182c;
+  --surface-2: #12223b;
+  --border: #1c2e4d;
+  --fg: #eef3fa;
+  --fg-muted: #8fa3bf;
+  --accent: #4a9ef0;
+  --accent-bg: #1f6fd1;
+  --accent-soft: #10284a;
+  --green: #5bbf4a;
+  --green-soft: #12301a;
+  --warning: #f2b33d;
+  --danger: #f06a6a;
+  --ring: #4a9ef0;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --surface-2: #eaeff6;
+  --border: #d5deea;
+  --fg: #0a2a5e;
+  --fg-muted: #4a5b73;
+  --accent: #1f6fd1;
+  --accent-bg: #1f6fd1;
+  --accent-soft: #dceafb;
+  --green: #237a30;
+  --green-soft: #e1f2de;
+  --warning: #946000;
+  --danger: #c23b3b;
+  --ring: #1f6fd1;
+}
+
+/*
+ * Alias untuk komponen shadcn. Nama DESIGN.md yang menang:
+ * `--accent` di sini = biru teks/ikon, BUKAN latar hover abu-abu ala shadcn.
+ * Komponen shadcn yang memakai `bg-accent` untuk hover harus diganti ke `bg-accent-soft`.
+ */
+:root {
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --card: var(--surface);
+  --card-foreground: var(--fg);
+  --popover: var(--surface);
+  --popover-foreground: var(--fg);
+  --primary: var(--accent-bg);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--fg);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--fg-muted);
+  --accent-foreground: #ffffff;
+  --destructive: var(--danger);
+  --input: var(--border);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-input: var(--input);
+
+  /* Token DESIGN.md → utilitas: bg-bg, bg-surface, text-fg-muted, bg-accent-bg, text-green, ... */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-accent: var(--accent);
+  --color-accent-bg: var(--accent-bg);
+  --color-accent-soft: var(--accent-soft);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-ring: var(--ring);
+
+  /* Font dari next/font di layout.tsx (DESIGN.md §4.2) */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-jakarta);
+  --font-mono: var(--font-jetbrains);
+}
+
+@theme {
+  /* Palet brand §3.2: hanya untuk dekorasi & gradien, bukan teks */
+  --color-brand-navy: #0a2a5e;
+  --color-brand-blue: #2e8ce8;
+  --color-brand-blue-deep: #1f6fd1;
+  --color-brand-green: #4fae45;
+
+  /* Skala tipe §4.2 */
+  --text-display-xl: clamp(2.5rem, 7.5vw, 6.5rem);
+  --text-display-xl--line-height: 0.98;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-l: clamp(2rem, 4.5vw, 3.75rem);
+  --text-display-l--line-height: 1.05;
+  --text-display-l--letter-spacing: -0.03em;
+  --text-title: clamp(1.25rem, 2vw, 1.625rem);
+  --text-title--line-height: 1.25;
+  --text-body-l: 1.125rem;
+  --text-body-l--line-height: 1.6;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.08em;
+
+  /* Radius §4.3 */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* Jarak antar section §4.3 → py-section */
+  --spacing-section: clamp(5rem, 12vw, 9rem);
+
+  /* Easing §4.5, sama dengan src/lib/motion.ts */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Container 1280 px, gutter 16 px mobile / 32 px desktop (§4.3) */
+@utility container-page {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Gradien awan logo (§3.2). Pakai hemat. */
+@utility bg-brand-gradient {
+  background-image: linear-gradient(135deg, #2e8ce8 0%, #1f6fd1 45%, #0a2a5e 100%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply bg-bg font-sans text-fg antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading;
+  }
+  /* Ring fokus 2 px, offset 2 px (§10) */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

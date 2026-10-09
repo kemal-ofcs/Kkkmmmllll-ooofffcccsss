@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/biome-format.sh\" >/dev/null 2>&1 || true",
+            "timeout": 30,
+            "statusMessage": "Format dengan Biome..."
+          }
+        ]
+      }
+    ]
+  }
+}
