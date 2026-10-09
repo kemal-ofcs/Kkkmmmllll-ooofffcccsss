@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const sizes = {
@@ -9,6 +8,7 @@ const sizes = {
 /**
  * Tema gelap wajib versi reversed (DESIGN.md §3.1). Keduanya dirender dan
  * dipilih lewat CSS agar tidak berkedip sebelum next-themes terbaca.
+ * <img> biasa: SVG tidak dioptimasi next/image, jadi JS-nya tidak perlu ikut.
  */
 export function Logo({
   variant = "mark",
@@ -21,14 +21,16 @@ export function Logo({
 
   return (
     <span className={cn("inline-flex", className)}>
-      <Image
+      {/* biome-ignore lint/performance/noImgElement: SVG statis */}
+      <img
         src={`/brand/logo-${variant}.svg`}
         alt="Kemal Office Studio"
         width={width}
         height={height}
         className="h-full w-auto dark:hidden"
       />
-      <Image
+      {/* biome-ignore lint/performance/noImgElement: SVG statis */}
+      <img
         src={`/brand/logo-${variant}-reversed.svg`}
         alt="Kemal Office Studio"
         width={width}

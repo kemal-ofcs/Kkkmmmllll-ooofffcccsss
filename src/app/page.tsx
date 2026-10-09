@@ -1,27 +1,33 @@
-import { Logo } from "@/components/brand/Logo";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { site } from "@/data/site";
+import { SectionHeading } from "@/components/motion/SectionHeading";
+import { Hero } from "@/components/sections/Hero";
+import { Showcase } from "@/components/sections/Showcase";
 
-// Placeholder Sprint 1: memastikan token, font, logo, dan tema bekerja.
-// Diganti section asli (DESIGN.md §6) mulai Sprint 2.
+// Kerangka section yang isinya menyusul Sprint 3–4 (DESIGN.md §6).
+const upcoming = [
+  { id: "layanan", label: "01 / Layanan", title: "Apa yang Kami Bangun" },
+  { id: "proses", label: "03 / Proses", title: "Dari Ide ke Production" },
+  { id: "harga", label: "04 / Harga", title: "Estimasi Transparan, Tanpa Tebak-tebakan" },
+  { id: "faq", label: "05 / FAQ", title: "Pertanyaan yang Sering Diajukan" },
+];
+
 export default function Home() {
+  const [layanan, ...rest] = upcoming;
   return (
-    <>
-      <header className="container-page flex h-16 items-center justify-between lg:h-18">
-        <Logo className="h-7 lg:h-8" />
-        <ThemeToggle />
-      </header>
+    <main id="konten" tabIndex={-1}>
+      <Hero />
+      <Placeholder {...layanan} />
+      <Showcase />
+      {rest.map((s) => (
+        <Placeholder key={s.id} {...s} />
+      ))}
+    </main>
+  );
+}
 
-      <main id="beranda" className="container-page flex flex-1 flex-col justify-center py-section">
-        <p className="inline-flex items-center gap-2 font-mono text-label text-fg-muted uppercase">
-          <span className="size-2 rounded-full bg-green" aria-hidden />
-          Tersedia untuk Proyek Baru · {site.availability.period}
-        </p>
-        <h1 className="mt-6 max-w-5xl text-display-xl font-bold">
-          Software Kustom untuk Bisnis yang Sedang <span className="text-accent">Bertumbuh.</span>
-        </h1>
-        <p className="mt-6 max-w-2xl text-body-l text-fg-muted">{site.description}</p>
-      </main>
-    </>
+function Placeholder({ id, label, title }: (typeof upcoming)[number]) {
+  return (
+    <section id={id} className="container-page min-h-[60vh] py-section">
+      <SectionHeading label={label} title={title} />
+    </section>
   );
 }

@@ -21,7 +21,7 @@
 
 * **Nama Studio:** Kemal Office Studio
 * **Positioning:** Studio rekayasa software dan produk digital skala butik.
-* **Tagline:** *Studio Web & Software Kustom Berperforma Tinggi.*
+* **Tagline:** *Studio Web & Software Kustom Berperforma Tinggi.* (Bagian "Berperforma Tinggi" belum ditampilkan di situs sampai ada bukti terukur, mis. skor Lighthouse; situs memakai "Studio Web & Software Kustom".)
 * **Value Proposition:** Membantu founder, bisnis, dan UMKM membangun aplikasi web yang cepat dimuat (di bawah 2 detik), sistem operasional internal kustom, dan solusi multiplatform dengan arsitektur data yang andal, tampilan interaktif, dan proses kerja yang transparan.
 * **Bahasa situs:** Bahasa Indonesia (`<html lang="id">`). Istilah teknis (Next.js, landing page, dashboard) boleh tetap dalam bahasa aslinya.
 * **Target Klien:**
@@ -59,11 +59,11 @@
 | Tema | next-themes | Default gelap tanpa kedipan saat load |
 | Animasi | Framer Motion | Micro-interaction & transisi layout |
 | Smooth scroll | Lenis | Scroll halus di desktop; nonaktif di perangkat sentuh & reduced-motion |
-| 3D | React Three Fiber / Three.js | Shader prosedural ringan (< 30 KB) |
+| 3D | WebGL2 tanpa library (satu fragment shader) | Shader prosedural ± 4 KB; three.js/R3F (± 190 KB gzip) tidak sepadan untuk satu bidang grid |
 | Database | Turso (libSQL over HTTP) | SQLite serverless, latensi rendah |
 | ORM | Drizzle ORM | Type-safe dan ringan |
 | Validasi | Zod | Validasi input lead di server |
-| Media | Cloudflare R2 (dengan custom domain publik, mis. `media.domainmu.com`) | Tanpa biaya egress |
+| Media | Folder `src/media/[slug]/`, di-import statis (ukuran & blur otomatis) | Cukup untuk 3–5 proyek; R2 ditunda sampai media membesar |
 | Notifikasi | Telegram Bot API | Lead baru dikirim ke chat pemilik |
 | Deployment | Vercel | Dukungan Next.js penuh, termasuk `after()` dan Image Optimization |
 | Testing | Vitest (unit), Playwright (smoke test) | Logika harga wajib teruji |
@@ -85,7 +85,6 @@
 | `IP_HASH_SALT` | Garam rahasia untuk hash IP |
 | `NEXT_PUBLIC_WA_NUMBER` | Format internasional tanpa `+`, mis. `6281234567890` |
 | `NEXT_PUBLIC_SITE_URL` | URL produksi untuk SEO & OG |
-| `NEXT_PUBLIC_MEDIA_URL` | URL publik bucket R2 |
 
 ---
 
@@ -113,7 +112,8 @@
 
 ### 4.2 Gambar
 * `next/image` dengan AVIF/WebP, placeholder blur, rasio tetap (`aspect-[16/10]`) untuk mencegah CLS.
-* `remotePatterns` di `next.config` mengizinkan domain R2.
+* Gambar disimpan di `src/media/[slug]/` dan di-import statis; video (bila ada) di `public/media/[slug]/`. R2 ditunda dari v1.
+* Gambar dirender lewat `getImageProps()` di server, bukan komponen `<Image>`, agar kode klien next/image tidak masuk bundle (lihat §8.1).
 * Cover proyek minimal 1600×1000 px.
 
 ---
@@ -144,7 +144,7 @@ Urutan section beserta ID anchor (dipakai navigasi):
 - Canvas dimuat setelah halaman interaktif dan tidak menambah JS awal.
 
 ### 5.2 Layanan
-1. **Web App Berperforma Tinggi:** Next.js, arsitektur edge, Core Web Vitals, SEO teknis.
+1. **Web App & Landing Page:** Next.js, arsitektur edge, Core Web Vitals, SEO teknis.
 2. **Sistem Manajemen Bisnis Kustom:** dashboard internal, absensi/payroll, otomasi alur data.
 3. **Multiplatform & Database Modern:** database terdistribusi, integrasi REST/tRPC, aplikasi desktop.
 
@@ -350,7 +350,7 @@ export interface Project {
 ### 8.1 Performa
 * Lighthouse ≥ 90 (desktop & mobile) untuk `/` dan `/proyek/[slug]`.
 * LCP < 1,8 detik, CLS < 0,05, INP < 200 ms.
-* JS awal ≤ 130 KB gzip (R3F dimuat terpisah).
+* JS awal ≤ 160 KB gzip, tanpa polyfill `noModule` (canvas dimuat terpisah). Next 16.4 + React kosong sudah ~138 KB, jadi tambahan milik situs maks. ~22 KB.
 
 ### 8.2 SEO
 * Metadata per halaman via Metadata API; OG image dinamis via `next/og`.
@@ -376,8 +376,8 @@ export interface Project {
 
 | Sprint | Fokus | Selesai bila |
 | :--- | :--- | :--- |
-| 1 — Fondasi | Inisialisasi Next.js, Tailwind, shadcn, next-themes, Lenis; design tokens; `site.ts`, `projects.ts`; Turso + Drizzle (`leads`); bucket R2 | Halaman kosong ber-tema tampil, migrasi DB jalan |
-| 2 — Visual & Proyek | Hero + canvas R3F, kartu proyek + hover-to-play, drawer intercepting route, halaman `/proyek/[slug]` | 3–5 proyek tampil lengkap dengan URL masing-masing |
+| 1 — Fondasi | Inisialisasi Next.js, Tailwind, shadcn, next-themes, Lenis; design tokens; `site.ts`, `projects.ts`; Turso + Drizzle (`leads`) | Halaman kosong ber-tema tampil, migrasi DB jalan |
+| 2 — Visual & Proyek | Hero + canvas WebGL, kartu proyek + hover-to-play, drawer intercepting route, halaman `/proyek/[slug]` | 3–5 proyek tampil lengkap dengan URL masing-masing |
 | 3 — Harga & Konversi | `pricing.ts` + unit test, kartu paket, kalkulator + guard rules, `/api/leads`, Telegram, rate limit | Contoh uji lulus; lead masuk DB & Telegram |
 | 4 — Penyelesaian & Rilis | Proses kerja, testimoni, FAQ, footer, kebijakan privasi, 404, SEO, audit Lighthouse, uji mobile & reduced-motion, domain production | Semua acceptance criteria & checklist DESIGN.md lulus |
 

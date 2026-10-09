@@ -1,8 +1,9 @@
 # DESIGN.md — Kemal Office Studio
 
-**Versi:** 2.1
+**Versi:** 2.3
+**Dial:** ENERGY 2 / RHYTHM 2 / MOTION 3 (antislop; dipakai untuk menilai setiap section)
 **Terhubung ke:** `prd-portofolio.md` v4.0
-**Stack:** Next.js (App Router) · Tailwind CSS · shadcn/ui · next-themes · Framer Motion · Lenis · React Three Fiber
+**Stack:** Next.js (App Router) · Tailwind CSS · shadcn/ui · next-themes · Framer Motion (`motion`) · Lenis · WebGL2 (tanpa library)
 
 > Dokumen ini adalah sumber kebenaran desain visual, interaksi, dan teks antarmuka. Semua keputusan tunduk pada target performa PRD §8.1 (Lighthouse ≥ 90, LCP < 1,8 dtk, CLS < 0,05). Bila sebuah efek mengancam target itu, efeknya yang dikurangi.
 
@@ -12,6 +13,8 @@
 | :--- | :--- |
 | 1.0 | Draf awal |
 | 2.1 | Tagline logo menjadi "Application · Documents · Management"; logo tersedia sebagai SVG vektor & PNG transparan |
+| 2.3 | Sprint 2: canvas hero memakai WebGL2 tanpa three.js/R3F (± 4 KB, jauh di bawah batas 30 KB); panel HALAMAN di hero menandai Beranda tanpa IntersectionObserver (panel hanya terlihat selama hero di layar) |
+| 2.2 | Audit antislop 001: label section memakai `/` (tanpa em dash); paket harga menjadi daftar bergaya lembar penawaran tanpa sorotan dan badge; footer bergaya kop dokumen dua kolom asimetris; token `--accent-bg-hover`; dial liveliness ditulis |
 | 2.0 | Palet dari logo KOS; tema gelap sebagai default; Lenis; seluruh teks UI Bahasa Indonesia; canvas hero bermotif grid sel dari logo; halaman studi kasus + drawer intercepting route; spesifikasi kalkulator lengkap dengan guard rules; aturan pemakaian logo |
 
 ---
@@ -35,7 +38,7 @@ Inspirasi: visuvate.com. Pola yang diadaptasi (bukan disalin):
 | Teks tombol yang "berputar" saat hover | `RollingText` di semua CTA & link nav |
 | Hero bergaya editor desain (panel Pages/Layers, strip proyek bisa di-drag) | Hero "Studio Console" dengan panel struktur halaman & strip proyek |
 | Press & hold untuk preview | Hover-to-play (desktop), play saat terlihat (mobile) |
-| Latar video bertema bintang | Canvas R3F prosedural bermotif grid sel dari logo |
+| Latar video bertema bintang | Canvas WebGL prosedural bermotif grid sel dari logo |
 | Ilustrasi proses yang bergerak mengikuti scroll | Section Proses Kerja dengan visual sticky |
 | Smooth scroll yang terasa "berat" | Lenis |
 
@@ -99,6 +102,7 @@ Default **tema gelap** via `next-themes` (`defaultTheme="dark"`, `attribute="dat
   --fg-muted:    #8FA3BF;   /* kontras 7,5:1 terhadap --bg */
   --accent:      #4A9EF0;   /* brand-blue diterangkan untuk teks/ikon di gelap (6,8:1) */
   --accent-bg:   #1F6FD1;   /* latar tombol utama, teks putih */
+  --accent-bg-hover: #1A5CAD; /* hover tombol utama, warna padat (6,6:1 dengan teks putih) */
   --accent-soft: #10284A;
   --green:       #5BBF4A;
   --green-soft:  #12301A;
@@ -116,6 +120,7 @@ Default **tema gelap** via `next-themes` (`defaultTheme="dark"`, `attribute="dat
   --fg-muted:    #4A5B73;   /* 6,5:1 */
   --accent:      #1F6FD1;   /* 4,6:1 untuk link */
   --accent-bg:   #1F6FD1;
+  --accent-bg-hover: #1A5CAD; /* hover tombol utama, warna padat (6,6:1 dengan teks putih) */
   --accent-soft: #DCEAFB;
   --green:       #237A30;   /* digelapkan agar lolos AA sebagai teks (5:1) */
   --green-soft:  #E1F2DE;
@@ -194,7 +199,7 @@ Motif dari ikon grid di dalam awan logo.
 - Bidang grid sel persegi (± 40×24 sel) dalam perspektif miring, warna sel memakai gradien brand (biru → navy) dengan opasitas rendah.
 - Sel di sekitar kursor "terangkat" dan menyala biru (falloff lembut, damping 0,08). Sesekali satu sel acak menyala **hijau** lalu memudar, seperti sudut dokumen pada logo.
 - Saat tanpa kursor (mobile): gelombang pelan otomatis.
-- Implementasi: satu `InstancedMesh` + shader kustom; tanpa tekstur. Target < 30 KB.
+- Implementasi: satu fragment shader WebGL2 layar penuh tanpa library (`src/components/three/data-grid.ts`, ± 4 KB); tanpa tekstur. Intensitas grid di tema terang 40% dari tema gelap agar headline tetap tenang.
 - Dimuat via `next/dynamic` (`ssr: false`) setelah `requestIdleCallback`; masuk dengan fade 600 ms.
 - DPR dibatasi `Math.min(devicePixelRatio, 1.5)`; render berhenti saat hero keluar viewport atau tab tersembunyi.
 - **Nonaktif** bila `prefers-reduced-motion`, `saveData`, WebGL tidak ada, atau perangkat ≤ 4 GB RAM (`navigator.deviceMemory`). Fallback: gradien radial biru-navy statis + pola grid tipis via CSS.
@@ -242,12 +247,12 @@ Tombol utama bergeser maks. 6 px ke arah kursor dalam radius 80 px. Nonaktif di 
 - Di bawah CTA: strip proyek (§5.3).
 
 ### 6.2 Layanan (`#layanan`)
-- Label mono `01 — LAYANAN`, judul: "Apa yang Kami Bangun".
+- Label mono `01 / LAYANAN`, judul: "Apa yang Kami Bangun".
 - Tiga kartu bernomor `01 / 02 / 03` dengan ikon lucide, judul, deskripsi 2 baris, dan chip teknologi.
 - Hover: border menjadi `--accent`, ikon naik 4 px, surface naik satu level.
 
 ### 6.3 Proyek (`#proyek`)
-- Label `02 — PROYEK`, judul: "Karya Terpilih".
+- Label `02 / PROYEK`, judul: "Karya Terpilih".
 - Filter pill dengan indikator aktif bergeser (`layoutId`). Kategori kosong disembunyikan; filter hilang bila hanya satu kategori.
 - Grid: 1 kolom (mobile), 2 kolom (≥ 768). Proyek `featured` span 2 kolom.
 - **Kartu:** cover `aspect-[16/10]` + blur; badge kategori (mono); judul `title`; tagline; maks. 4 chip teknologi (+N); satu metrik dengan angka berwarna `--green`.
@@ -271,7 +276,7 @@ Tombol utama bergeser maks. 6 px ke arah kursor dalam radius 80 px. Nonaktif di 
 9. Navigasi "Proyek Berikutnya →" dengan cover kecil.
 
 ### 6.5 Proses Kerja (`#proses`)
-- Label `03 — PROSES`, judul: "Dari Ide ke Production".
+- Label `03 / PROSES`, judul: "Dari Ide ke Production".
 - Desktop: kiri sticky berisi 4 langkah (aktif = teks `--fg` + garis progres `--accent`), kanan visual yang berganti sesuai scroll.
 - Visual sederhana berbasis SVG/CSS dengan warna brand:
   1. **Discovery & PRD:** dokumen dengan baris teks yang terisi satu per satu.
@@ -281,11 +286,13 @@ Tombol utama bergeser maks. 6 px ke arah kursor dalam radius 80 px. Nonaktif di 
 - Mobile: daftar vertikal biasa dengan visual kecil di tiap langkah, tanpa sticky.
 
 ### 6.6 Harga & Kalkulator (`#harga`)
-Label `04 — HARGA`, judul: "Estimasi Transparan, Tanpa Tebak-tebakan".
+Label `04 / HARGA`, judul: "Estimasi Transparan, Tanpa Tebak-tebakan".
 
-**Kartu paket** (3 kolom desktop, carousel geser di mobile)
-- Nama, harga "mulai Rp X" (angka dari `pricing.ts`), deskripsi singkat, daftar fitur dengan centang `--green`.
-- Paket **Growth** diberi border `--accent` dan badge `PALING DIPILIH`.
+**Daftar paket** (lembar penawaran, bukan tiga kartu berdampingan)
+- Satu panel bergaya lembar penawaran, turunan motif "Documents" di tagline logo: tiga paket ditumpuk sebagai baris, dipisah garis 1 px `--border`, urut dari harga terendah.
+- Tiap baris: nama paket + deskripsi satu kalimat (kiri), maks. 3 fitur utama dengan centang `--green` (tengah, desktop), harga "mulai Rp X" rata kanan `tabular-nums` (angka dari `pricing.ts`), dan tombol **Hitung Paket Ini**.
+- Tidak ada paket yang disorot dan tidak ada badge. Pengunjung memilih dari kebutuhannya, kalkulator yang menjelaskan selisihnya.
+- Desktop: panel lebar penuh di atas kalkulator. Mobile: baris yang sama ditumpuk (nama + harga sebaris, fitur di bawahnya, tombol penuh lebar), tanpa carousel.
 - Tombol **Hitung Paket Ini** → scroll ke kalkulator dengan konfigurasi paket terpilih; panel kalkulator berkedip highlight 600 ms.
 
 **Kalkulator**
@@ -311,12 +318,14 @@ Label `04 — HARGA`, judul: "Estimasi Transparan, Tanpa Tebak-tebakan".
 - Testimoni: carousel satu kartu (kutipan, nama, peran, foto opsional), tombol panah + indikator `01 / 03`; tidak auto-play.
 
 ### 6.8 FAQ (`#faq`)
-- Label `05 — FAQ`, judul: "Pertanyaan yang Sering Diajukan".
+- Label `05 / FAQ`, judul: "Pertanyaan yang Sering Diajukan".
 - shadcn `Accordion` (satu terbuka sekaligus), ikon plus berputar menjadi ×.
 
 ### 6.9 CTA Penutup & Footer (`#kontak`)
 - Blok CTA besar dengan gradien brand halus di latar: **"Punya ide? Mari wujudkan bersama."** + tombol WhatsApp + tautan email.
-- Footer 4 kolom (stack di mobile): logo full reversed/normal + tagline; Navigasi; Kontak; Legal (Kebijakan Privasi, garansi 30 hari).
+- Footer bergaya kop dokumen (motif "Documents"), dua kolom asimetris di desktop (7/5), ditumpuk di mobile:
+  - **Kiri:** logo full (reversed di tema gelap) + satu kalimat tentang studio, lalu blok kontak ala kop surat: label mono `WHATSAPP`, `EMAIL`, `SOSIAL` di kiri dan nilainya di kanan, rata seperti isian dokumen.
+  - **Kanan:** navigasi section sebagai satu daftar pendek; di bawahnya Kebijakan Privasi dan ringkasan garansi 30 hari dalam satu paragraf kecil.
 - Baris bawah: `© 2026 Kemal Office Studio` + garis tipis gradien brand.
 
 ### 6.10 Halaman 404
@@ -337,14 +346,14 @@ Layout artikel sederhana, lebar teks maks. 68 karakter, heading `title`.
 | Status tersedia | Tersedia untuk Proyek Baru · Q4 2026 |
 | Status penuh | Antrean Penuh · Buka Lagi [Bulan] |
 | Kartu proyek → drawer | Baca Studi Kasus Lengkap / Buka Aplikasi |
-| Kartu paket | Hitung Paket Ini |
+| Baris paket | Hitung Paket Ini |
 | Kalkulator WA | Konsultasikan Estimasi Ini via WhatsApp |
 | Setelah klik WA | Membuka WhatsApp… |
 | Penafian | Angka ini estimasi awal, bukan penawaran final. Harga akhir ditetapkan setelah sesi discovery. |
 | Video gagal | (diam, poster tetap tampil) |
 | 404 | Halaman Tidak Ditemukan |
 
-Gaya bahasa: "kami" untuk studio, "Anda" untuk pengunjung; kalimat pendek dan aktif; hindari jargon tanpa penjelasan.
+Gaya bahasa: "kami" untuk studio, "Anda" untuk pengunjung; kalimat pendek dan aktif; hindari jargon tanpa penjelasan. Tanpa em dash (—) di teks UI: pakai koma, titik, titik dua, `/`, atau `·`. Klaim performa (mis. "berperforma tinggi") tidak ditulis sampai ada bukti terukur.
 
 ---
 
@@ -377,7 +386,8 @@ src/
     project/
       ProjectCard.tsx  ProjectDrawer.tsx  ProjectGallery.tsx
     three/
-      DataGridCanvas.tsx
+      HeroCanvas.tsx          # pemuat + fallback CSS
+      data-grid.ts            # shader WebGL2
       shaders/
   lib/
     motion.ts
@@ -393,7 +403,7 @@ src/
 
 | Item | Batas |
 | :--- | :--- |
-| JS awal (gzip) | ≤ 130 KB (R3F & Lenis terpisah dari bundle awal) |
+| JS awal (gzip) | ≤ 160 KB tanpa polyfill `noModule` (framework ~138 KB; canvas & Lenis terpisah dari bundle awal) |
 | Canvas | ≤ 30 KB kode/shader, tanpa tekstur |
 | Font | Maks. 5 file, self-hosted via `next/font` |
 | Video preview | ≤ 4 MB, 720p, `preload="none"` |
@@ -424,8 +434,8 @@ src/
 | Sprint | Pekerjaan desain |
 | :--- | :--- |
 | 1 | Pasang file logo & buat favicon; tokens warna/tipografi/spacing; next-themes; LenisProvider; `RollingText`, `Reveal`, Header |
-| 2 | `DataGridCanvas` + fallback, Hero Studio Console, kartu proyek, drawer intercepting route, halaman studi kasus, galeri |
-| 3 | Kartu paket, `CostEstimator` (desktop & wizard mobile), guard rules + toast, animasi total, alur WhatsApp |
+| 2 | `HeroCanvas` (WebGL2) + fallback, Hero Studio Console, kartu proyek, drawer intercepting route, halaman studi kasus, galeri |
+| 3 | Daftar paket, `CostEstimator` (desktop & wizard mobile), guard rules + toast, animasi total, alur WhatsApp |
 | 4 | Proses Kerja scroll-linked, testimoni, FAQ, CTA & footer, 404, kebijakan privasi, OG image, audit performa & aksesibilitas |
 
 ---
@@ -437,7 +447,7 @@ src/
 - [ ] Kontras AA lolos di tema gelap & terang (termasuk teks hijau)
 - [ ] Canvas, Lenis, dan efek gerak mati pada reduced-motion
 - [ ] Tidak ada layout shift saat font, gambar, atau video dimuat
-- [ ] Harga di kartu paket = hasil kalkulator untuk konfigurasi minimumnya
+- [ ] Harga di daftar paket = hasil kalkulator untuk konfigurasi minimumnya
 - [ ] Ketiga guard rule & penggantian otomatis bekerja, pesan alasan terbaca di mobile
 - [ ] Klik WhatsApp langsung membuka chat; lead masuk DB & Telegram
 - [ ] Drawer → refresh menampilkan halaman studi kasus penuh
