@@ -146,7 +146,7 @@ Default **tema gelap** via `next-themes` (`defaultTheme="dark"`, `attribute="dat
 | Body & UI | **Inter** | Weight 400/500 |
 | Label & angka teknis | **JetBrains Mono** | Uppercase, tracking +0.08em, 11–12 px |
 
-Semua dengan `display: "swap"`, subset `latin`, dan `adjustFontFallback` aktif agar tidak memicu CLS. Total maksimal 5 file font.
+Semua dengan `display: "optional"` (bukan `swap`; terukur CLS 0,215 di PSI mobile karena font cadangan berbeda ukuran di Linux/Android), subset `latin`, dan `adjustFontFallback` aktif. Total maksimal 5 file font.
 
 | Token | Nilai |
 | :--- | :--- |

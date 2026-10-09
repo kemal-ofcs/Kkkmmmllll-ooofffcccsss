@@ -7,23 +7,26 @@ import { Header } from "@/components/sections/Header";
 import { site } from "@/data/site";
 import "./globals.css";
 
+// display "optional" (bukan "swap"): font tidak ditukar setelah tampil, jadi teks hero tidak
+// berganti jumlah baris dan mendorong strip proyek. PSI mobile mencatat CLS 0,215 dengan "swap"
+// karena font cadangan (Arial) tidak ada di Linux/Android (2026-10-09).
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
 });
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
   weight: ["600", "700"],
-  display: "swap",
+  display: "optional",
 });
 
 const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
 });
 
 export const metadata: Metadata = {
