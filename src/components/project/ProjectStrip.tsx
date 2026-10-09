@@ -43,7 +43,13 @@ export function ProjectStrip({ items }: { items: StripItem[] }) {
       }
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
+    // Marquee mulai setelah interaksi pertama: tidak ada kerja per frame selama halaman dimuat.
+    const begin = () => {
+      for (const e of starters) window.removeEventListener(e, begin);
+      raf = requestAnimationFrame(tick);
+    };
+    const starters = ["pointermove", "pointerdown", "keydown", "scroll", "touchstart"] as const;
+    for (const e of starters) window.addEventListener(e, begin, { passive: true });
 
     // Geser manual melewati satu salinan: lompat balik agar tak pernah habis.
     const onScroll = () => {
@@ -103,6 +109,7 @@ export function ProjectStrip({ items }: { items: StripItem[] }) {
 
     return () => {
       cancelAnimationFrame(raf);
+      for (const e of starters) window.removeEventListener(e, begin);
       io.disconnect();
       el.removeEventListener("scroll", onScroll);
       el.removeEventListener("pointerdown", down);

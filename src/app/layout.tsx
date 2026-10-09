@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { Footer } from "@/components/sections/Footer";
 import { Header } from "@/components/sections/Header";
 import { site } from "@/data/site";
 import "./globals.css";
@@ -32,6 +33,7 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description: site.description,
+  openGraph: { type: "website", locale: "id_ID", siteName: site.name },
 };
 
 export default function RootLayout({ children, modal }: LayoutProps<"/">) {
@@ -51,6 +53,7 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
         <ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem={false}>
           <Header />
           {children}
+          <Footer />
           {modal}
         </ThemeProvider>
         <SmoothScroll />

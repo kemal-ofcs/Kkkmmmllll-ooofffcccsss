@@ -13,9 +13,11 @@ const sizes = {
 export function Logo({
   variant = "mark",
   className,
+  loading,
 }: {
   variant?: keyof typeof sizes;
   className?: string;
+  loading?: "lazy";
 }) {
   const { width, height } = sizes[variant];
 
@@ -27,6 +29,7 @@ export function Logo({
         alt="Kemal Office Studio"
         width={width}
         height={height}
+        loading={loading}
         className="h-full w-auto dark:hidden"
       />
       {/* biome-ignore lint/performance/noImgElement: SVG statis */}
@@ -35,6 +38,7 @@ export function Logo({
         alt="Kemal Office Studio"
         width={width}
         height={height}
+        loading={loading}
         className="hidden h-full w-auto dark:block"
       />
     </span>

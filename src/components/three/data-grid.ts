@@ -73,8 +73,18 @@ function compile(gl: WebGL2RenderingContext, type: number, src: string) {
 
 /** Mengembalikan fungsi stop, atau null bila WebGL2 tidak tersedia (fallback CSS tetap tampil). */
 export function startDataGrid(canvas: HTMLCanvasElement, onFirstFrame: () => void) {
-  const gl = canvas.getContext("webgl2", { antialias: false, powerPreference: "low-power" });
+  // failIfMajorPerformanceCaveat: tanpa GPU (WebGL lewat software, mis. SwiftShader) kembalikan
+  // null, jadi fallback CSS yang tampil; shader ini menyita CPU bila tidak dipercepat GPU.
+  const gl = canvas.getContext("webgl2", {
+    antialias: false,
+    powerPreference: "low-power",
+    failIfMajorPerformanceCaveat: true,
+  });
   if (!gl) return null;
+  // Chrome tidak selalu mematuhi failIfMajorPerformanceCaveat; cek renderer software langsung.
+  const debug = gl.getExtension("WEBGL_debug_renderer_info");
+  const renderer = debug ? String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL)) : "";
+  if (/swiftshader|llvmpipe|basic render|software/i.test(renderer)) return null;
 
   const vs = compile(gl, gl.VERTEX_SHADER, VERT);
   const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);

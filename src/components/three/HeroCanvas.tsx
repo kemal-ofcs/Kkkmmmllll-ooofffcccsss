@@ -6,7 +6,9 @@ type Nav = Navigator & { connection?: { saveData?: boolean }; deviceMemory?: num
 
 /**
  * Latar hero (DESIGN.md §5.2). Fallback CSS selalu ada; canvas Data Grid dimuat
- * saat browser idle dan hanya bila perangkat mampu, lalu masuk dengan fade 600 ms.
+ * setelah interaksi pertama dan hanya bila perangkat mampu, lalu masuk dengan fade 600 ms.
+ * Interaksi, bukan idle: shader + loop render tidak boleh menyita main thread saat
+ * halaman dimuat (terukur 2,4 dtk TBT di Lighthouse mobile, 2026-10-09).
  */
 export function HeroCanvas() {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -22,21 +24,19 @@ export function HeroCanvas() {
 
     let cancelled = false;
     let stop: (() => void) | null = null;
-    const start = () =>
+    const events = ["pointermove", "pointerdown", "keydown", "scroll", "touchstart"] as const;
+    const start = () => {
+      for (const e of events) window.removeEventListener(e, start);
       import("./data-grid").then(({ startDataGrid }) => {
         if (cancelled || !canvas.current) return;
         stop = startDataGrid(canvas.current, () => setOn(true));
       });
-    // Safari belum punya requestIdleCallback; tipe DOM menganggapnya selalu ada.
-    const w: Partial<Pick<Window, "requestIdleCallback" | "cancelIdleCallback">> = window;
-    const idle = w.requestIdleCallback
-      ? w.requestIdleCallback(start)
-      : window.setTimeout(start, 1200);
+    };
+    for (const e of events) window.addEventListener(e, start, { passive: true });
 
     return () => {
       cancelled = true;
-      if (w.cancelIdleCallback) w.cancelIdleCallback(idle);
-      else window.clearTimeout(idle);
+      for (const e of events) window.removeEventListener(e, start);
       stop?.();
     };
   }, []);

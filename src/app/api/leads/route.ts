@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { and, count, eq, gt } from "drizzle-orm";
+import { and, count, eq, gt, lt } from "drizzle-orm";
 import { after } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
@@ -12,6 +12,8 @@ import { leadMessage, sendTelegram } from "@/lib/telegram";
 const MAX_BYTES = 2048;
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_PER_WINDOW = 5;
+// Masa simpan 12 bulan (PRD §8.4, halaman /kebijakan-privasi).
+const RETENTION_MS = 365 * 24 * 60 * 60 * 1000;
 
 const keys = <T extends object>(o: T) =>
   Object.keys(o) as [Extract<keyof T, string>, ...Extract<keyof T, string>[]];
@@ -71,6 +73,11 @@ export async function POST(request: Request) {
 
   // Setelah respons terkirim. Gagal kirim tidak membatalkan lead; notifiedAt tetap kosong.
   after(async () => {
+    // ponytail: pembersihan menumpang lead baru, tanpa cron; cukup selama lead terus masuk.
+    await db
+      .delete(leads)
+      .where(lt(leads.createdAt, new Date(Date.now() - RETENTION_MS)))
+      .catch((error) => console.error("Hapus lead > 12 bulan gagal", error));
     try {
       await sendTelegram(leadMessage(config, total, createdAt));
       await db.update(leads).set({ notifiedAt: new Date() }).where(eq(leads.id, id));
