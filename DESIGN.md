@@ -241,7 +241,7 @@ Tombol utama bergeser maks. 6 px ke arah kursor dalam radius 80 px. Nonaktif di 
 ### 6.1 Hero (`#beranda`)
 - Status pill: titik `--green` berdenyut (2 dtk) + `Tersedia untuk Proyek Baru · Q4 2026`. Saat penuh: titik `--warning`, teks `Antrean Penuh · Buka Lagi [bulan]`.
 - Headline `display-xl`: **"Software Kustom untuk Bisnis yang Sedang Bertumbuh."** Kata "Bertumbuh" diberi warna `--accent`.
-- Subteks `body-l`, `--fg-muted`, maks. 2 baris: "Web app cepat, sistem operasional internal, dan dashboard data yang dibangun rapi dari PRD hingga production."
+- Subteks `body-l`, `--fg-muted`, maks. 2 baris: "Web app, sistem operasional internal, dan dashboard data yang dibangun rapi dari PRD hingga production."
 - CTA: **Hitung Estimasi Proyek** (utama) dan **Lihat Proyek** (outline).
 - Latar: canvas Data Grid, dengan gradien bawah ke `--bg` agar menyatu.
 - Di bawah CTA: strip proyek (§5.3).

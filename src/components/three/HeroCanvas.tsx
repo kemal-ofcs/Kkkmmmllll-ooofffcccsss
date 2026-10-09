@@ -53,6 +53,9 @@ export function HeroCanvas() {
         data-on={on}
         className="absolute inset-0 size-full opacity-0 transition-opacity duration-600 data-[on=true]:opacity-100"
       />
+      {/* Scrim di belakang kolom teks: sel yang menyala tidak menurunkan kontras subteks
+          di bawah AA (terburuk 6,2:1). Mobile tanpa kursor cukup diredam merata. */}
+      <div className="absolute inset-0 bg-bg/60 lg:bg-transparent lg:bg-linear-to-r lg:from-bg/75 lg:via-70% lg:via-bg/75 lg:to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-b from-transparent to-bg" />
     </div>
   );

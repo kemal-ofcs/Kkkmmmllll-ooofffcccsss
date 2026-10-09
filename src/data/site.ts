@@ -14,7 +14,7 @@ export const site = {
   name: "Kemal Office Studio",
   tagline: "Studio Web & Software Kustom",
   description:
-    "Web app cepat, sistem operasional internal, dan dashboard data yang dibangun rapi dari PRD hingga production.",
+    "Web app, sistem operasional internal, dan dashboard data yang dibangun rapi dari PRD hingga production.",
   waNumber: process.env.NEXT_PUBLIC_WA_NUMBER ?? "",
   email: "kemalofficestudio@gmail.com",
   availability: {
