@@ -1,6 +1,6 @@
 # DESIGN.md — Kemal Office Studio
 
-**Versi:** 2.3
+**Versi:** 2.4
 **Dial:** ENERGY 2 / RHYTHM 2 / MOTION 3 (antislop; dipakai untuk menilai setiap section)
 **Terhubung ke:** `prd-portofolio.md` v4.0
 **Stack:** Next.js (App Router) · Tailwind CSS · shadcn/ui · next-themes · Framer Motion (`motion`) · Lenis · WebGL2 (tanpa library)
@@ -13,6 +13,7 @@
 | :--- | :--- |
 | 1.0 | Draf awal |
 | 2.1 | Tagline logo menjadi "Application · Documents · Management"; logo tersedia sebagai SVG vektor & PNG transparan |
+| 2.4 | Sprint 3: kontrol kalkulator memakai radio/checkbox native di dalam kartu; di mobile ringkasan tampil inline di bawah wizard dan bar total muncul selama angka total belum terlihat (ketuk = gulir ke ringkasan); setelah pindah langkah wizard, layar kembali ke atas kalkulator bila penanda langkah tertutup header; ikon tombol WhatsApp memakai ikon chat generik (bukan logo merek) |
 | 2.3 | Sprint 2: canvas hero memakai WebGL2 tanpa three.js/R3F (± 4 KB, jauh di bawah batas 30 KB); panel HALAMAN di hero menandai Beranda tanpa IntersectionObserver (panel hanya terlihat selama hero di layar) |
 | 2.2 | Audit antislop 001: label section memakai `/` (tanpa em dash); paket harga menjadi daftar bergaya lembar penawaran tanpa sorotan dan badge; footer bergaya kop dokumen dua kolom asimetris; token `--accent-bg-hover`; dial liveliness ditulis |
 | 2.0 | Palet dari logo KOS; tema gelap sebagai default; Lenis; seluruh teks UI Bahasa Indonesia; canvas hero bermotif grid sel dari logo; halaman studi kasus + drawer intercepting route; spesifikasi kalkulator lengkap dengan guard rules; aturan pemakaian logo |

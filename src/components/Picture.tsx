@@ -1,5 +1,5 @@
 import type { getImageProps } from "next/image";
-import { cn } from "@/lib/utils";
+import { cx } from "@/lib/cx";
 
 export type PictureData = { props: ReturnType<typeof getImageProps>["props"]; blur?: string };
 
@@ -7,7 +7,15 @@ export type PictureData = { props: ReturnType<typeof getImageProps>["props"]; bl
  * Gambar dari `picture()` (lib/picture.ts) + placeholder blur statis di belakangnya.
  * Tanpa state: aman di server maupun klien. Induknya harus `relative` + rasio tetap.
  */
-export function Picture({ data, className }: { data: PictureData; className?: string }) {
+export function Picture({
+  data,
+  fit = "cover",
+  className,
+}: {
+  data: PictureData;
+  fit?: "cover" | "contain";
+  className?: string;
+}) {
   return (
     <>
       {data.blur && (
@@ -21,7 +29,7 @@ export function Picture({ data, className }: { data: PictureData; className?: st
       <img
         {...data.props}
         alt={data.props.alt}
-        className={cn("object-cover object-top", className)}
+        className={cx(fit === "cover" ? "object-cover object-top" : "object-contain", className)}
       />
     </>
   );

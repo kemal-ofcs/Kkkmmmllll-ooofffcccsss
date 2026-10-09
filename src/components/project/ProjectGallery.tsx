@@ -66,7 +66,7 @@ export function ProjectGallery({ images }: { images: GalleryImage[] }) {
             </button>
           </div>
           <div className="relative aspect-16/10 overflow-hidden rounded-md bg-surface-2">
-            <Picture data={current.full} className="object-contain" />
+            <Picture data={current.full} fit="contain" />
           </div>
           <figcaption className="flex items-center justify-between gap-4">
             <button

@@ -1,12 +1,22 @@
 "use client";
 
+import type Lenis from "lenis";
 import { useEffect } from "react";
+
+let lenis: Lenis | null = null;
+
+/** Gulir ke elemen: lewat Lenis bila aktif (agar tidak bertabrakan), selain itu native.
+ * Keduanya memakai scroll-padding-top di globals.css sebagai offset header. */
+export function scrollToElement(el: HTMLElement) {
+  if (lenis) return lenis.scrollTo(el);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+}
 
 /**
  * Lenis (DESIGN.md §5.4), dimuat terpisah setelah halaman interaktif. Tidak aktif
  * di perangkat sentuh dan reduced-motion. Elemen yang punya scroll sendiri (menu,
- * drawer) diberi atribut `data-lenis-prevent`. Offset anchor diambil Lenis dari
- * scroll-padding-top di globals.css.
+ * drawer) diberi atribut `data-lenis-prevent`.
  *
  * ponytail: Lenis memakai RAF sendiri (autoRaf), bukan frame.update motion seperti
  * DESIGN.md §5.4, agar motion tidak masuk bundle awal. Loop motion hanya berjalan
@@ -19,15 +29,14 @@ export function SmoothScroll() {
     let cancelled = false;
     let destroy: (() => void) | undefined;
 
-    import("lenis").then(({ default: Lenis }) => {
+    import("lenis").then(({ default: LenisClass }) => {
       if (cancelled) return;
-      const lenis = new Lenis({
-        autoRaf: true,
-        lerp: 0.1,
-        smoothWheel: true,
-        anchors: true,
-      });
-      destroy = () => lenis.destroy();
+      const instance = new LenisClass({ autoRaf: true, lerp: 0.1, smoothWheel: true });
+      lenis = instance;
+      destroy = () => {
+        instance.destroy();
+        lenis = null;
+      };
     });
 
     return () => {
@@ -53,11 +62,7 @@ export function SmoothScroll() {
 
       e.preventDefault();
       if (url.hash !== location.hash) history.pushState(null, "", url.hash);
-      // Lenis aktif menggulir sendiri lewat opsi `anchors`; tanpa Lenis, gulir native.
-      if (!document.documentElement.classList.contains("lenis")) {
-        const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        target.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-      }
+      scrollToElement(target);
       // Pindahkan fokus agar Tab berikutnya mulai dari target (link "Lewati ke konten").
       if (target.hasAttribute("tabindex")) target.focus({ preventScroll: true });
     };

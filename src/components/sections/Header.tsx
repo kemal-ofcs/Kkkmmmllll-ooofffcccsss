@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { RollingText } from "@/components/motion/RollingText";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 // "/#id" (bukan "#id") agar tetap benar dari halaman /proyek/[slug].
 const nav = [
@@ -55,11 +55,12 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild className="hidden lg:inline-flex">
-            <a href="/#harga">
+          {/* Pembungkus menyembunyikan di mobile; class hidden di tombol akan bentrok dengan inline-flex */}
+          <span className="hidden lg:block">
+            <a href="/#harga" className={buttonVariants()}>
               <RollingText stagger>Hitung Estimasi</RollingText>
             </a>
-          </Button>
+          </span>
           <button
             type="button"
             aria-label="Buka menu"
@@ -109,12 +110,14 @@ export function Header() {
             style={{ "--i": nav.length } as React.CSSProperties}
             className="mt-10"
           >
-            <Button asChild size="lg" className="w-full">
-              {/* biome-ignore lint/a11y/useValidAnchor: navigasi ke #harga; onClick hanya menutup menu */}
-              <a href="/#harga" onClick={closeMenu}>
-                Hitung Estimasi Proyek
-              </a>
-            </Button>
+            {/* biome-ignore lint/a11y/useValidAnchor: navigasi ke #harga; onClick hanya menutup menu */}
+            <a
+              href="/#harga"
+              onClick={closeMenu}
+              className={buttonVariants({ size: "lg", className: "w-full" })}
+            >
+              Hitung Estimasi Proyek
+            </a>
           </div>
         </nav>
       </dialog>

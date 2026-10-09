@@ -380,6 +380,22 @@ html.lenis body {
     }
   }
 
+  /* Kalkulator berkedip 600 ms setelah "Hitung Paket Ini" (§6.6); hanya opacity */
+  .calc-flash {
+    pointer-events: none;
+    position: absolute;
+    inset: -1rem;
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-lg);
+    opacity: 0;
+    animation: calc-flash 0.6s var(--ease-out);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .calc-flash {
+      animation-duration: 0.15s;
+    }
+  }
+
   /* Menu mobile (§6.0): item masuk berurutan 40 ms */
   .mobile-menu[open] [data-menu-item] {
     animation: menu-item-in 0.45s var(--ease-out) both;
@@ -389,6 +405,12 @@ html.lenis body {
     .mobile-menu[open] [data-menu-item] {
       animation: none;
     }
+  }
+}
+
+@keyframes calc-flash {
+  30% {
+    opacity: 1;
   }
 }
 

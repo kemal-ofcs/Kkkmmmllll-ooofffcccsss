@@ -180,13 +180,15 @@ Semua angka berasal dari `src/lib/pricing.ts`. Kartu paket menampilkan harga **"
 | | | Web App / MVP Dinamis | Rp 5.500.000 |
 | | | Sistem Internal / Dashboard | Rp 8.000.000 |
 | Gaya Visual | Pilih satu | Bersih & Minimalis | Rp 0 |
-| | | Interaksi Kaya (Framer Motion) | + Rp 1.000.000 |
-| | | Showcase 3D (R3F) | + Rp 2.000.000 |
-| Backend & Data | Pilih satu | Tanpa Database (statis) | Rp 0 |
-| | | Database Cloud (Turso + CRUD) | + Rp 1.500.000 |
-| | | Multi-role Auth + Export Laporan (sudah termasuk database) | + Rp 3.000.000 |
-| Add-ons | Pilih beberapa | Payment Gateway (Midtrans/Xendit) | + Rp 1.500.000 |
-| | | Dua Bahasa (ID/EN) | + Rp 800.000 |
+| | | Animasi interaktif (catatan: Framer Motion) | + Rp 1.000.000 |
+| | | Tampilan 3D interaktif (catatan: WebGL) | + Rp 2.000.000 |
+| Backend & Data | Pilih satu | Tanpa database (catatan: halaman statis) | Rp 0 |
+| | | Data tersimpan online (catatan: tambah, ubah, hapus data) | + Rp 1.500.000 |
+| | | Login per peran + ekspor laporan (catatan: sudah termasuk database) | + Rp 3.000.000 |
+| Add-ons | Pilih beberapa | Pembayaran online (catatan: Midtrans / Xendit) | + Rp 1.500.000 |
+| | | Dua bahasa (catatan: Indonesia & Inggris) | + Rp 800.000 |
+
+Label tampil berbahasa awam untuk founder & UMKM; nama teknologi menjadi catatan kecil di kartu (audit antislop 003).
 | Timeline | Pilih satu | Standar (3–4 minggu) | × 1,0 |
 | | | Priority Sprint (1–2 minggu) | × 1,25 |
 
@@ -219,7 +221,7 @@ Tombol pada tiap kartu: **Hitung Paket Ini** → scroll ke kalkulator dengan kon
 | G2 | Backend = Tanpa Database | Add-on *Payment Gateway* nonaktif | "Butuh database" |
 | G3 | Tipe = Web App atau Sistem Internal | Opsi *Tanpa Database* nonaktif; backend minimal *Database Cloud* | "Aplikasi dinamis butuh database" |
 
-Bila perubahan pilihan membuat opsi yang sudah terpilih menjadi tidak valid, opsi itu **otomatis diganti ke opsi valid terdekat** (atau dilepas, untuk add-on), dan muncul pemberitahuan singkat, mis. "Payment Gateway dilepas karena butuh database."
+Bila perubahan pilihan membuat opsi yang sudah terpilih menjadi tidak valid, opsi itu **otomatis diganti ke opsi valid terdekat** (atau dilepas, untuk add-on), dan muncul pemberitahuan singkat, mis. "Pembayaran online dilepas karena butuh database."
 
 #### E. Termin Pembayaran
 * **Termin 1 (DP 50%):** sebelum perancangan antarmuka dan arsitektur dimulai.
@@ -253,8 +255,8 @@ Apakah ada waktu untuk diskusi lebih lanjut?
 **Format notifikasi Telegram:**
 ```text
 🆕 Lead baru — Rp 11.900.000
-Web App · Framer Motion · Database Cloud
-Add-ons: Payment Gateway
+Web App · Animasi interaktif · Data online
+Add-ons: Pembayaran online
 Timeline: Priority Sprint
 08 Okt 2026, 19.20 WIB
 ```

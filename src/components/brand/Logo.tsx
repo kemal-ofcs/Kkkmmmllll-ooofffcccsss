@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cx } from "@/lib/cx";
 
 const sizes = {
   mark: { width: 671, height: 335 },
@@ -20,7 +20,7 @@ export function Logo({
   const { width, height } = sizes[variant];
 
   return (
-    <span className={cn("inline-flex", className)}>
+    <span className={cx("inline-flex", className)}>
       {/* biome-ignore lint/performance/noImgElement: SVG statis */}
       <img
         src={`/brand/logo-${variant}.svg`}
